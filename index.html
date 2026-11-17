@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EdgeItGet AI</title>
+<meta name="description" content="EdgeItGet AI(엣지있게) — AI 에이전트로, 일을 엣지있게. AI 에이전트와 AI 서비스를 기획부터 출시까지 직접 만드는 소프트웨어 회사">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112..125,600..900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: 12-col ledger. Left rail = section index, right = content. One diagonal "edge" cut on the hero wordmark. */
+  --paper:#ECEFEA;
+  --paper-2:#E2E6E0;
+  --ink:#101513;
+  --muted:#56605B;
+  --line:#C3C9C2;
+  --accent:#2638F0;
+  --live:#14824A;
+  --display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+.mono{font-family:var(--mono);font-size:12.5px;letter-spacing:.02em}
+h1,h2,h3{text-wrap:balance;margin:0}
+
+/* header */
+header.top{border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
+.mark{font-family:var(--display);font-weight:900;font-stretch:125%;font-size:19px;letter-spacing:-.01em;text-decoration:none;display:flex;align-items:center;gap:8px}
+.mark i{display:inline-block;width:14px;height:14px;background:var(--accent);clip-path:polygon(0 0,100% 0,100% 100%)}
+.mark .ai{font-stretch:100%;font-weight:800;font-size:12px;color:var(--paper);background:var(--accent);padding:2px 5px;margin-left:2px;letter-spacing:.04em}
+.mark .ko{font-family:var(--body);font-weight:500;font-size:13px;color:var(--muted);margin-left:6px;padding-left:10px;border-left:1px solid var(--line)}
+.band .tagline{margin:0 0 18px;font-weight:700;font-size:clamp(16px,2vw,22px);letter-spacing:-.02em;color:var(--accent)}
+.mark .it,.band .word .it{color:var(--accent)}
+nav{display:flex;gap:clamp(12px,2.4vw,28px)}
+nav a{text-decoration:none;font-size:14px;color:var(--muted)}
+nav a:hover{color:var(--ink)}
+
+/* hero */
+.hero{padding:clamp(40px,7vw,84px) 0 0}
+.hero-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(28px,5vw,64px);align-items:end}
+.eyebrow{color:var(--muted);display:flex;gap:10px;align-items:center;margin-bottom:22px}
+.eyebrow b{color:var(--accent);font-weight:500}
+.slogan{margin:0 0 14px;font-size:clamp(18px,2vw,22px);font-weight:700;letter-spacing:-.02em;color:var(--accent)}
+.hero h1{font-size:clamp(34px,5.2vw,60px);line-height:1.18;letter-spacing:-.035em;font-weight:700}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p.lede{font-size:clamp(16px,1.6vw,18px);color:var(--muted);max-width:34em;margin:24px 0 0}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:13px 20px;font-size:15px;font-weight:500;text-decoration:none;border:1px solid var(--ink)}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn.solid:hover{background:var(--accent);border-color:var(--accent)}
+.btn.ghost:hover{background:var(--paper-2)}
+
+/* ship log */
+.log{border:1px solid var(--ink);background:var(--paper)}
+.log-head{display:flex;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+.log ol{list-style:none;margin:0;padding:0}
+.log li{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:baseline;padding:11px 14px;border-bottom:1px solid var(--line)}
+.log li:last-child{border-bottom:0}
+.log .name{font-weight:500;font-size:15px}
+.log .url{color:var(--muted);display:block;margin-top:1px;word-break:break-all}
+.log a{text-decoration:none}
+.log a:hover .name{color:var(--accent)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--live);display:inline-block;box-shadow:0 0 0 3px rgba(20,130,74,.15)}
+.status{color:var(--live)}
+@media (prefers-reduced-motion:no-preference){
+  .dot{animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{50%{box-shadow:0 0 0 6px rgba(20,130,74,.05)}}
+}
+
+/* wordmark band with edge cut */
+.band{margin-top:clamp(44px,7vw,80px);position:relative;overflow:hidden;border-top:1px solid var(--ink)}
+.band .word{font-family:var(--display);font-weight:900;font-stretch:125%;font-size:clamp(56px,15.5vw,206px);line-height:.82;letter-spacing:-.045em;white-space:nowrap;padding:14px 0 .12em;margin:0 0 0 -.04em;color:var(--ink);clip-path:polygon(0 0,100% 0,100% 52%,86% 100%,0 100%)}
+.band .cut{position:absolute;right:clamp(16px,4vw,40px);bottom:0;width:14%;height:48%;pointer-events:none;background:var(--accent);clip-path:polygon(100% 0,100% 100%,0 100%)}
+
+/* figures */
+.figs{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+.fig{padding:22px clamp(14px,2vw,24px);border-right:1px solid var(--line)}
+.fig:last-child{border-right:0}
+.fig .n{font-family:var(--display);font-weight:800;font-stretch:112%;font-size:clamp(32px,4vw,46px);line-height:1;font-variant-numeric:tabular-nums}
+.fig .n small{font-size:.45em;margin-left:3px;font-weight:700}
+.fig .l{color:var(--muted);font-size:14px;margin-top:8px}
+
+/* sections */
+section.block{padding:clamp(56px,8vw,96px) 0;border-bottom:1px solid var(--line)}
+.sec{display:grid;grid-template-columns:220px 1fr;gap:clamp(20px,4vw,56px)}
+.sec-idx{position:relative}
+.sec-idx .mono{color:var(--muted);display:block}
+.sec-idx h2{font-size:clamp(24px,2.6vw,30px);letter-spacing:-.03em;margin-top:8px;line-height:1.25}
+.sec-intro{font-size:17px;color:var(--muted);max-width:40em;margin:0 0 32px}
+
+/* services */
+.svc{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border-top:1px solid var(--ink)}
+.svc article.lead{grid-column:1/-1;padding:28px 0 30px;border-right:0}
+.svc article.lead h3{font-size:24px}
+.svc article.lead p{max-width:44em;font-size:16px}
+.svc article.lead ~ article:nth-child(even){padding-left:0;padding-right:28px;border-right:1px solid var(--line)}
+.svc article.lead ~ article:nth-child(odd){padding-left:28px;padding-right:0;border-right:0}
+.svc article{padding:26px 24px 28px 0;border-bottom:1px solid var(--line)}
+.svc article:nth-child(odd){padding-right:28px;border-right:1px solid var(--line)}
+.svc article:nth-child(even){padding-left:28px}
+.svc .k{color:var(--accent)}
+.svc h3{font-size:20px;letter-spacing:-.02em;margin:10px 0 8px}
+.svc p{margin:0;color:var(--muted);font-size:15px}
+.svc ul{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.svc li{font-family:var(--mono);font-size:12px;padding:3px 8px;border:1px solid var(--line);color:var(--ink)}
+
+/* products */
+.prods{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.prod{display:flex;flex-direction:column;border:1px solid var(--line);background:var(--paper);padding:22px;text-decoration:none;transition:border-color .15s,transform .15s}
+.prod:hover{border-color:var(--ink)}
+@media (prefers-reduced-motion:no-preference){.prod:hover{transform:translateY(-2px)}}
+.prod .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tag{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.prod h3{font-size:20px;letter-spacing:-.02em;margin:16px 0 4px}
+.prod .sub{font-size:14px;color:var(--accent);font-weight:500}
+.prod p{font-size:14.5px;color:var(--muted);margin:10px 0 18px;flex:1}
+.prod .stack{font-family:var(--mono);font-size:11.5px;color:var(--ink);border-top:1px dashed var(--line);padding-top:12px;word-break:break-all}
+.prod .go{font-family:var(--mono);font-size:12px;margin-top:10px;color:var(--ink)}
+.prod:hover .go{color:var(--accent)}
+
+.reel{margin-top:40px;display:grid;grid-template-columns:minmax(0,300px) 1fr;gap:clamp(24px,4vw,48px);align-items:center;border-top:1px solid var(--ink);padding-top:36px}
+.reel-video{background:var(--ink);aspect-ratio:9/16;width:100%}
+.reel-video video{display:block;width:100%;height:100%;object-fit:cover;background:var(--ink)}
+.reel-copy .mono{color:var(--accent)}
+.reel-copy h3{font-size:clamp(22px,2.4vw,28px);letter-spacing:-.03em;margin:10px 0 14px;line-height:1.3}
+.reel-copy p{color:var(--muted);margin:0 0 12px;max-width:36em}
+.reel-copy ul{margin:16px 0 22px;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.reel-copy li{font-family:var(--mono);font-size:12px;padding:3px 8px;border:1px solid var(--line)}
+@media (max-width:640px){.reel{grid-template-columns:1fr}.reel-video{max-width:300px}}
+
+/* track record */
+.tl{border-top:1px solid var(--ink)}
+.tl-row{display:grid;grid-template-columns:150px 1fr;gap:24px;padding:24px 0;border-bottom:1px solid var(--line)}
+.tl-row .when{font-family:var(--mono);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;padding-top:3px}
+.tl-row h3{font-size:19px;letter-spacing:-.02em}
+.tl-row h3 span{font-weight:400;color:var(--muted);font-size:15px;margin-left:6px}
+.tl-row p{margin:8px 0 0;color:var(--muted);font-size:15px;max-width:44em}
+
+.case{margin-top:32px;border:1px solid var(--ink);padding:26px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;background:var(--paper-2)}
+.case .mono{color:var(--accent)}
+.case h3{font-size:20px;letter-spacing:-.02em;margin:8px 0}
+.case p{margin:0;color:var(--muted);font-size:15px;max-width:42em}
+.case-links{display:flex;flex-direction:column;gap:8px}
+@media (max-width:760px){.case{grid-template-columns:1fr}.case-links{flex-direction:row;flex-wrap:wrap}}
+
+.tl-row.now .when{color:var(--accent);font-weight:500}
+.tl-row.now h3{color:var(--accent)}
+.tl-row.now h3 span{color:var(--muted)}
+.tl-row p a{color:var(--ink);font-weight:500;text-underline-offset:3px}
+
+/* stack */
+.tools{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink)}
+.tools div{padding:18px 18px 20px 0;border-bottom:1px solid var(--line)}
+.tools .mono{color:var(--muted)}
+.tools b{display:block;font-weight:500;margin-top:6px;font-size:15px;line-height:1.5}
+
+/* about */
+.about{display:grid;grid-template-columns:1fr 280px;gap:clamp(24px,4vw,48px);align-items:start}
+.about p{margin:0 0 16px;font-size:17px;max-width:36em}
+.card{border:1px solid var(--ink);padding:20px}
+.card dl{margin:0;display:grid;gap:12px}
+.card dt{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.card dd{margin:2px 0 0;font-size:15px}
+
+/* contact */
+.contact{background:var(--ink);color:var(--paper);padding:clamp(56px,8vw,96px) 0}
+.contact .mono{color:#9AA59F}
+.contact h2{font-size:clamp(30px,4.4vw,52px);letter-spacing:-.035em;line-height:1.2;margin:12px 0 18px}
+.contact p{color:#B7C0BB;max-width:36em;margin:0}
+.c-links{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:40px;border-top:1px solid #39413D}
+.c-links a,.c-links div{padding:20px 20px 20px 0;border-bottom:1px solid #39413D;text-decoration:none;display:block}
+.c-links .mono{display:block;margin-bottom:6px}
+.c-links b{font-weight:500;font-size:17px;word-break:break-all}
+.c-links a:hover b{color:#8E9BFF}
+footer{background:var(--ink);color:#8B9590;border-top:1px solid #39413D}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding-top:22px;padding-bottom:28px}
+
+@media (max-width:920px){
+  .hero-grid{grid-template-columns:1fr}
+  .sec{grid-template-columns:1fr}
+  .prods{grid-template-columns:repeat(2,1fr)}
+  .tools{grid-template-columns:repeat(2,1fr)}
+  .about{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  nav{display:none}
+  .figs{grid-template-columns:repeat(2,1fr)}
+  .fig:nth-child(2){border-right:0}
+  .fig:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .svc{grid-template-columns:1fr}
+  .svc article,.svc article:nth-child(odd),.svc article:nth-child(even),.svc article.lead ~ article:nth-child(odd),.svc article.lead ~ article:nth-child(even){padding:22px 0;border-right:0}
+  .prods{grid-template-columns:1fr}
+  .tl-row{grid-template-columns:1fr;gap:6px}
+  .c-links{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="EdgeItGet AI 홈"><i></i>Edge<span class="it">It</span>Get<b class="ai">AI</b><span class="ko">엣지있게</span></a>
+    <nav aria-label="주요 메뉴">
+      <a href="#services">서비스</a>
+      <a href="#work">출시작</a>
+      <a href="#record">이력</a>
+      <a href="#about">대표</a>
+      <a href="#contact">문의</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow mono"><b>AI AGENT &amp; PRODUCT STUDIO</b><span>·</span><span>SEOUL</span></div>
+        <p class="slogan">AI 에이전트로, 일을 엣지있게.</p>
+        <h1>기획부터 출시까지,<br><em>AI로 직접 만들어</em><br>세상에 내놓습니다.</h1>
+        <p class="lede">EdgeItGet AI(엣지있게)는 업무를 대신 처리하는 AI 에이전트와 AI 서비스를 만드는 소프트웨어 회사입니다. 14년 차 서비스 기획자가 문제 정의와 정책 설계부터 개발, 출시, 운영까지 직접 맡습니다.</p>
+        <div class="cta">
+          <a class="btn solid" href="#contact">프로젝트 문의하기 →</a>
+          <a class="btn ghost" href="#work">출시한 서비스 보기</a>
+        </div>
+      </div>
+
+      <div class="log" aria-label="운영 중인 서비스 목록">
+        <div class="log-head mono"><span>SHIP LOG</span><span>2026.11</span></div>
+        <ol>
+          <li><span class="dot" aria-hidden="true"></span><a href="https://aiagentenglish.vercel.app" target="_blank" rel="noopener"><span class="name">지문클리닉</span><span class="url mono">aiagentenglish.vercel.app</span></a><span class="status mono">LIVE</span></li>
+          <li><span class="dot" aria-hidden="true"></span><a href="https://kdate.store" target="_blank" rel="noopener"><span class="name">K-Dating Chat</span><span class="url mono">kdate.store</span></a><span class="status mono">LIVE</span></li>
+          <li><span class="dot" aria-hidden="true"></span><a href="https://wordchef-hub.vercel.app" target="_blank" rel="noopener"><span class="name">Word Chef 게임 허브</span><span class="url mono">wordchef-hub.vercel.app</span></a><span class="status mono">LIVE</span></li>
+          <li><span class="dot" aria-hidden="true"></span><a href="https://doc2excel-ai.vercel.app" target="_blank" rel="noopener"><span class="name">doc2excel AI</span><span class="url mono">doc2excel-ai.vercel.app</span></a><span class="status mono">LIVE</span></li>
+          <li><span class="dot" aria-hidden="true"></span><a href="https://kakao-reply-coach.vercel.app" target="_blank" rel="noopener"><span class="name">카톡 답장 코치</span><span class="url mono">kakao-reply-coach.vercel.app</span></a><span class="status mono">LIVE</span></li>
+          <li><span class="dot" aria-hidden="true"></span><a href="https://www.tiktok.com/@empiredecoded_global" target="_blank" rel="noopener"><span class="name">EmpireDecoded</span><span class="url mono">TikTok @empiredecoded_global</span></a><span class="status mono">LIVE</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="band wrap" aria-hidden="true">
+      <p class="word">Edge<span class="it">It</span>Get</p>
+      <span class="cut"></span>
+    </div>
+
+    <div class="wrap">
+      <div class="figs">
+        <div class="fig"><div class="n">14<small>년</small></div><div class="l">서비스 기획·PM 경력</div></div>
+        <div class="fig"><div class="n">6<small>개</small></div><div class="l">직접 개발해 운영 중인 서비스</div></div>
+        <div class="fig"><div class="n">4<small>개국</small></div><div class="l">글로벌 앱 설계 (북미·독일·호주·멕시코)</div></div>
+        <div class="fig"><div class="n">7<small>년</small></div><div class="l">커머스 스타트업 창업·운영</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="services">
+    <div class="wrap sec">
+      <div class="sec-idx"><span class="mono">01 / SERVICES</span><h2>하는 일</h2></div>
+      <div>
+        <p class="sec-intro">아이디어 단계부터 출시 후 운영까지 한 사람이 끝까지 책임집니다. 기획서만 넘기지 않고, 동작하는 결과물로 드립니다.</p>
+        <div class="svc">
+          <article class="lead">
+            <span class="mono k">A · CORE</span>
+            <h3>AI 에이전트 개발</h3>
+            <p>사람이 매일 반복하는 일을 AI 에이전트가 처리하도록 만듭니다. 업무 흐름을 먼저 기획자의 눈으로 쪼개고, 어디까지 AI에 맡기고 어디서 사람이 확인할지 정책을 정한 다음 에이전트로 구현합니다. 상담 응대, 문서 처리, 콘텐츠 생산처럼 단계가 정해진 업무부터 시작합니다.</p>
+            <ul><li>업무 흐름 설계</li><li>Claude API</li><li>Tool Use</li><li>사람 확인 단계 설계</li><li>운영 로그</li></ul>
+          </article>
+          <article>
+            <span class="mono k">B</span>
+            <h3>AI 서비스 기획 · MVP 개발</h3>
+            <p>요구사항 정리, 화면 설계, 정책 문서, 실제 동작하는 웹 서비스까지. 로그인·결제·관리자 기능을 갖춘 MVP를 만듭니다.</p>
+            <ul><li>기획서</li><li>화면정의서</li><li>Next.js</li><li>Supabase</li><li>결제 연동</li></ul>
+          </article>
+          <article>
+            <span class="mono k">C</span>
+            <h3>교육 AI 솔루션</h3>
+            <p>수능 영어 문항 생성 SaaS를 직접 운영한 경험으로 학원·교육업체에 맞는 문항 생성, 학습 콘텐츠, 워크북 제작 도구를 만듭니다.</p>
+            <ul><li>문항 생성</li><li>교사·학생 뷰</li><li>전자책 제작</li><li>게임형 학습</li></ul>
+          </article>
+          <article>
+            <span class="mono k">D</span>
+            <h3>AI 콘텐츠 · 캐릭터 제작</h3>
+            <p>AI 캐릭터 IP 설계부터 숏폼 영상 제작까지. 200편 가까운 AI 숏폼을 직접 만든 제작 파이프라인을 그대로 씁니다.</p>
+            <ul><li>캐릭터 IP</li><li>숏폼 영상</li><li>Veo</li><li>Kling</li><li>Suno</li></ul>
+          </article>
+          <article>
+            <span class="mono k">E</span>
+            <h3>업무 자동화 도구</h3>
+            <p>영수증·문서를 엑셀로 정리하는 일처럼 매일 반복되는 업무를 AI 웹 도구로 바꿉니다. 작게 만들어 바로 써보는 방식입니다.</p>
+            <ul><li>문서 → 엑셀</li><li>OCR</li><li>PDF 생성</li><li>Python</li></ul>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="work">
+    <div class="wrap sec">
+      <div class="sec-idx"><span class="mono">02 / SHIPPED</span><h2>직접 만들어 운영 중인 서비스</h2></div>
+      <div>
+        <p class="sec-intro">모두 기획, 디자인, 개발, 배포를 직접 했고 지금도 운영하고 있습니다. 눌러서 바로 써볼 수 있습니다.</p>
+        <div class="prods">
+          <a class="prod" href="https://aiagentenglish.vercel.app" target="_blank" rel="noopener">
+            <div class="row"><span class="tag">EDTECH · SaaS</span><span class="dot" aria-hidden="true"></span></div>
+            <h3>지문클리닉</h3>
+            <div class="sub">수능 영어 문항 생성 SaaS</div>
+            <p>지문을 넣으면 수능형 영어 문항을 만들어 줍니다. 학생용·교사용 화면을 나누고, 사용량 제한과 이용권 판매까지 붙였습니다.</p>
+            <div class="stack">Next.js · Supabase Auth · Redis</div>
+            <div class="go">aiagentenglish.vercel.app ↗</div>
+          </a>
+          <a class="prod" href="https://kdate.store" target="_blank" rel="noopener">
+            <div class="row"><span class="tag">GLOBAL · AI CHAT</span><span class="dot" aria-hidden="true"></span></div>
+            <h3>K-Dating Chat</h3>
+            <div class="sub">AI K-pop 아이돌과 배우는 한국어</div>
+            <p>해외 K-컬처 팬을 위한 AI 대화 서비스. 아이돌 그룹 2팀·멤버 10명의 캐릭터와 해외 결제를 갖췄고, 일본 틱톡 채널로 유입을 키우고 있습니다.</p>
+            <div class="stack">AI Chat · Stripe · PayPal · Kling · Suno</div>
+            <div class="go">kdate.store ↗</div>
+          </a>
+          <a class="prod" href="https://wordchef-hub.vercel.app" target="_blank" rel="noopener">
+            <div class="row"><span class="tag">KIDS · CONTENT</span><span class="dot" aria-hidden="true"></span></div>
+            <h3>Word Chef</h3>
+            <div class="sub">캐릭터 영어 교육 브랜드</div>
+            <p>셰프 신디·록키·빅터가 나오는 영어 학습 브랜드. 숏폼 영상, 워크북 전자책, 게임 허브를 하나의 세계관으로 묶었습니다.</p>
+            <div class="stack">Veo · Python 워크북 자동화 · Web Games</div>
+            <div class="go">wordchef-hub.vercel.app ↗</div>
+          </a>
+          <a class="prod" href="https://doc2excel-ai.vercel.app" target="_blank" rel="noopener">
+            <div class="row"><span class="tag">AUTOMATION</span><span class="dot" aria-hidden="true"></span></div>
+            <h3>doc2excel AI</h3>
+            <div class="sub">영수증 사진 → 엑셀</div>
+            <p>영수증을 찍어 올리면 항목을 읽어 엑셀 표로 정리합니다. 경비 정리처럼 손으로 옮겨 적던 일을 없앱니다.</p>
+            <div class="stack">Vision AI · Excel export</div>
+            <div class="go">doc2excel-ai.vercel.app ↗</div>
+          </a>
+          <a class="prod" href="https://kakao-reply-coach.vercel.app" target="_blank" rel="noopener">
+            <div class="row"><span class="tag">CONSUMER · AI</span><span class="dot" aria-hidden="true"></span></div>
+            <h3>카톡 답장 코치</h3>
+            <div class="sub">답장이 어려운 메시지에 도움</div>
+            <p>받은 카톡을 붙여 넣으면 상황에 맞는 답장 후보를 제안합니다. 일상에서 쓰는 작은 AI 도구입니다.</p>
+            <div class="stack">LLM · Vercel</div>
+            <div class="go">kakao-reply-coach.vercel.app ↗</div>
+          </a>
+          <a class="prod" href="https://www.tiktok.com/@empiredecoded_global" target="_blank" rel="noopener">
+            <div class="row"><span class="tag">MEDIA · SHORTS</span><span class="dot" aria-hidden="true"></span></div>
+            <h3>EmpireDecoded</h3>
+            <div class="sub">글로벌 기업 분석 AI 쇼츠</div>
+            <p>세계 상장기업 이야기를 짧은 영상으로 풀어 주는 채널. 기획부터 영상까지 AI 제작 파이프라인으로 만들어 틱톡을 중심으로 올립니다.</p>
+            <div class="stack">AI Video · Shorts Pipeline · TikTok</div>
+            <div class="go">TikTok @empiredecoded_global ↗</div>
+          </a>
+        </div>
+        <div class="reel">
+          <div class="reel-video">
+            <video controls playsinline preload="none" poster="empiredecoded.jpg" width="540" height="960">
+              <source src="empiredecoded.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="reel-copy">
+            <span class="mono">AI VIDEO · EMPIREDECODED</span>
+            <h3>대표의 얼굴과 목소리로 만든 AI 버튜버</h3>
+            <p>영상 속 진행자는 대표 본인의 얼굴과 목소리를 AI로 만든 버튜버입니다. 촬영 없이 대본만으로 글로벌 기업 분석 영상을 만들고, 장면 구성과 자료 화면, 자막까지 AI 제작 파이프라인으로 처리합니다.</p>
+            <p>같은 방식으로 회사 소개, 교육 콘텐츠, 상품 홍보 영상을 대표나 직원이 직접 찍지 않고도 만들 수 있습니다.</p>
+            <ul><li>AI 아바타</li><li>음성 복제</li><li>숏폼 제작</li><li>대본 → 영상</li></ul>
+            <a class="btn ghost" href="https://www.tiktok.com/@empiredecoded_global" target="_blank" rel="noopener">틱톡에서 더 보기 ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="record">
+    <div class="wrap sec">
+      <div class="sec-idx"><span class="mono">03 / TRACK RECORD</span><h2>대표 이력</h2></div>
+      <div>
+        <p class="sec-intro">헬스케어, 글로벌 IoT, 에듀테크, 커머스에서 서비스를 기획하고 운영했고, 2026년부터는 AI로 직접 만들어 출시합니다.</p>
+        <div class="tl">
+          <div class="tl-row now">
+            <div class="when">2026 — 현재</div>
+            <div><h3>AI 서비스 · 에이전트 개발<span>EdgeItGet AI 대표</span></h3><p>기획만 하던 일에서 직접 개발해 출시하는 일로 넓혔습니다. 수능 영어 문항 생성 SaaS 지문클리닉, 해외 결제를 붙인 AI 한국어 대화 서비스 K-Dating Chat, 캐릭터 영어 교육 브랜드 Word Chef를 비롯해 6개 서비스를 직접 만들어 운영하고 있습니다. <a href="#work">출시작 보기 →</a></p></div>
+          </div>
+          <div class="tl-row">
+            <div class="when">2024 —</div>
+            <div><h3>헬스케어 AI 서비스 기획<span>헬스케어 플랫폼</span></h3><p>AI 증상 체크와 명의 추천, AI 챗봇, 환자 커뮤니티를 갖춘 헬스케어 서비스를 기획했습니다. 민감한 건강·위치 정보를 다루는 정책과 관리자 시스템, 외주 패키지까지 맡았습니다.</p></div>
+          </div>
+          <div class="tl-row">
+            <div class="when">2023.02 — 2024.04</div>
+            <div><h3>LG전자 ThinQ 앱 설계<span>에이전시 PM</span></h3><p>스마트홈 앱 ThinQ의 케어 기능을 북미·독일·호주·멕시코 4개국 대상으로 설계했습니다. 나라별 정책과 사용 맥락이 다른 글로벌 화면을 다뤘습니다.</p></div>
+          </div>
+          <div class="tl-row">
+            <div class="when">2021.04 — 2022.12</div>
+            <div><h3>에듀테크 신사업 기획<span>웅진씽크빅</span></h3><p>학습 플랫폼과 메타버스 학습 상품의 신사업을 기획하고 LMS 화면을 설계했습니다.</p></div>
+          </div>
+          <div class="tl-row">
+            <div class="when">2013.09 — 2021.03</div>
+            <div><h3>패션 SNS 커머스 창업<span>패션맵 대표</span></h3><p>1030 남성 패션 SNS 커머스를 창업해 7년간 운영했습니다. 정부지원 앱 개발과 팔로워 30만 규모의 페이스북 커머스를 직접 키웠습니다.</p></div>
+          </div>
+        </div>
+        <div class="case">
+          <div>
+            <span class="mono">PLANNING CASE STUDY · 4주 단독 기획</span>
+            <h3>Solo — 1인 프리랜서를 위한 프로젝트·정산 통합 도구</h3>
+            <p>프리랜서 5명을 인터뷰해 7가지 불편을 3가지 원인으로 줄이고, 정보 구조와 세금 처리 방식 같은 핵심 결정을 대안과 포기한 점까지 함께 정리한 기획 사례입니다. 기획자로서 문제를 어떻게 푸는지 가장 잘 보여주는 작업입니다.</p>
+          </div>
+          <div class="case-links">
+            <a class="btn solid" href="https://kwiss22.github.io/kyunghwan.dev/solo.html" target="_blank" rel="noopener">케이스 스터디 ↗</a>
+            <a class="btn ghost" href="https://kwiss22.github.io/kyunghwan.dev/solo-demo.html" target="_blank" rel="noopener">인터랙티브 데모 ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap sec">
+      <div class="sec-idx"><span class="mono">04 / TOOLKIT</span><h2>만드는 도구</h2></div>
+      <div class="tools">
+        <div><span class="mono">AI 개발 · 에이전트</span><b>Claude Code · Claude API<br>Cursor · Codex</b></div>
+        <div><span class="mono">웹 · 백엔드</span><b>Next.js · Vercel<br>Supabase · Redis</b></div>
+        <div><span class="mono">결제</span><b>Stripe · PayPal<br>스마트스토어</b></div>
+        <div><span class="mono">콘텐츠</span><b>Veo · Kling · Suno<br>Grok · CapCut</b></div>
+        <div><span class="mono">문서 자동화</span><b>Python<br>WeasyPrint · PDF</b></div>
+        <div><span class="mono">기획 · 디자인</span><b>Figma · Figma Make<br>화면정의서</b></div>
+        <div><span class="mono">데이터</span><b>SQL 로그 분석<br>지표 설계</b></div>
+        <div><span class="mono">코드</span><b><a href="https://github.com/kwiss22" target="_blank" rel="noopener">github.com/kwiss22</a></b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="about">
+    <div class="wrap sec">
+      <div class="sec-idx"><span class="mono">05 / FOUNDER</span><h2>대표 소개</h2></div>
+      <div class="about">
+        <div>
+          <p>안녕하세요, EdgeItGet AI 대표 허경환입니다. 2013년 패션 커머스를 창업한 뒤로 14년 동안 헬스케어, 글로벌 IoT, 에듀테크 서비스를 기획해 왔습니다.</p>
+          <p>기획자는 보통 기획서에서 일이 끝납니다. AI 도구가 나오고 나서는 그다음까지 직접 갈 수 있게 됐습니다. 지금은 기획한 서비스를 직접 개발해 출시하고, 사용자 반응을 보며 고쳐 나갑니다.</p>
+          <p>무엇을 만들지, 어디까지 만들지 함께 정하는 일부터 도와드립니다.</p>
+        </div>
+        <div class="card">
+          <dl>
+            <div><dt>대표</dt><dd>허경환 Prince</dd></div>
+            <div><dt>학력</dt><dd>한양대학교 창업 대학원</dd></div>
+            <div><dt>경력</dt><dd>서비스 기획·PM 14년</dd></div>
+            <div><dt>사업자</dt><dd>EdgeItGet AI · 엣지있게</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <span class="mono">06 / CONTACT</span>
+      <h2>만들고 싶은 서비스가 있다면<br>편하게 이야기해 주세요.</h2>
+      <p>아직 아이디어 단계여도 괜찮습니다. 무엇을 먼저 만들어 확인하면 좋을지부터 같이 정리합니다.</p>
+      <div class="c-links">
+        <a href="mailto:edgeitget@gmail.com"><span class="mono">EMAIL</span><b>edgeitget@gmail.com</b></a>
+        <a href="https://github.com/kwiss22" target="_blank" rel="noopener"><span class="mono">GITHUB</span><b>github.com/kwiss22 ↗</b></a>
+        <a href="https://kwiss22.github.io/kyunghwan.dev" target="_blank" rel="noopener"><span class="mono">PM PORTFOLIO</span><b>kyunghwan.dev ↗</b></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap mono">
+    <span>© 2026 EdgeItGet AI (엣지있게) · 대표 허경환 · AI 에이전트로, 일을 엣지있게.</span>
+    <span>Seoul, Korea</span>
+  </div>
+</footer>
+</body>
+</html>
